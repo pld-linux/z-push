@@ -1,0 +1,11 @@
+--- z-push/index.php~	2008-08-08 16:44:28.000000000 +0300
++++ z-push/index.php	2008-09-09 20:54:19.000000000 +0300
+@@ -16,7 +16,7 @@
+ ob_start(false, 1048576);
+ 
+ include_once('zpushdefs.php');
+-include_once("config.php");
++include_once("/etc/webapps/z-push/config.php");
+ include_once("proto.php");
+ include_once("request.php");
+ include_once("debug.php");
