@@ -1,12 +1,13 @@
 Summary:	An Implementation of the ActiveSync protocol
 Name:		z-push
 Version:	1.2
-Release:	0.4
+Release:	0.5
 License:	GPL v2
 Group:		Applications/WWW
 Source0:	http://download.berlios.de/z-push/%{name}-%{version}.tar.gz
 # Source0-md5:	17d57872b08f59e739e7e699db71ee86
 Patch0:		%{name}.patch
+Patch1:		%{name}-apache_request_headers.patch
 URL:		http://z-push.sourceforge.net/
 BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	sed >= 4.0
@@ -33,6 +34,7 @@ can be connected and synced with these devices.
 %setup -q -n %{name}
 find -name '*.php' -print0 | xargs -0 %{__sed} -i -e 's,\r$,,'
 %patch0 -p1
+%patch1 -p1
 
 cat > apache.conf <<'EOF'
 Alias /Microsoft-Server-ActiveSync %{_appdir}/index.php
@@ -41,17 +43,24 @@ Alias /Microsoft-Server-ActiveSync %{_appdir}/index.php
 </Directory>
 EOF
 
+cat > lighttpd.conf <<'EOF'
+alias.url += (
+    "/Microsoft-Server-ActiveSync" => "%{_appdir}/index.php",
+)
+EOF
+
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sysconfdir},%{_appdir}}
-
-cp -a apache.conf $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
-cp -a apache.conf $RPM_BUILD_ROOT%{_sysconfdir}/httpd.conf
 cp -a *.php $RPM_BUILD_ROOT%{_appdir}
 cp -a backend $RPM_BUILD_ROOT%{_appdir}
 cp -a include $RPM_BUILD_ROOT%{_appdir}
 cp -a state $RPM_BUILD_ROOT%{_appdir}
+
 mv $RPM_BUILD_ROOT{%{_appdir},%{_sysconfdir}}/config.php
+cp -a apache.conf $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
+cp -a apache.conf $RPM_BUILD_ROOT%{_sysconfdir}/httpd.conf
+cp -a lighttpd.conf $RPM_BUILD_ROOT%{_sysconfdir}/lighttpd.conf
 
 %triggerin -- apache1 < 1.3.37-3, apache1-base
 %webapp_register apache %{_webapp}
@@ -65,6 +74,12 @@ mv $RPM_BUILD_ROOT{%{_appdir},%{_sysconfdir}}/config.php
 %triggerun -- apache < 2.2.0, apache-base
 %webapp_unregister httpd %{_webapp}
 
+%triggerin -- lighttpd
+%webapp_register lighttpd %{_webapp}
+
+%triggerun -- lighttpd
+%webapp_unregister lighttpd %{_webapp}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -74,5 +89,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(750,root,http) %{_sysconfdir}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/apache.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/lighttpd.conf
 %attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config.php
 %{_appdir}
