@@ -6,19 +6,9 @@ License:	GPL
 Group:		Applications/WWW
 Source0:	http://download.berlios.de/z-push/%{name}-%{version}.tar.gz
 # Source0-md5:	17d57872b08f59e739e7e699db71ee86
-URL:		http://z-push.sourceforge.net
+URL:		http://z-push.sourceforge.net/
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires:	webapps
-%if %{with trigger}
-Requires(triggerpostun):	sed >= 4.0
-%endif
-#Requires:	webserver(access)
-#Requires:	webserver(alias)
-#Requires:	webserver(auth)
-#Requires:	webserver(cgi)
-#Requires:	webserver(indexfile)
-#Requires:	webserver(php)
-#Requires:	webserver(setenv)
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
