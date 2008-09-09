@@ -1,0 +1,22 @@
+--- z-push/compat.php~	2008-09-09 21:38:38.000000000 +0300
++++ z-push/compat.php	2008-09-09 21:38:41.000000000 +0300
+@@ -24,4 +24,18 @@
+ 	}
+ }
+ 
+-?>
++# based on http://z-push.sourceforge.net/phpbb/viewtopic.php?f=2&t=36
++if (!function_exists("apache_request_headers")) {
++	function apache_request_headers() {
++		$headers = array();
++		foreach ($_SERVER as $key => $value) {
++			if (substr($key, 0, 5) != 'HTTP_') {
++				continue;
++			}
++			$headername = strtr(ucwords(strtolower(strtr(substr($key, 5), '_', ' '))), ' ', '-');
++			$headers[$headername] = $value;
++		}
++
++		return $headers;
++	}
++}
