@@ -1,11 +1,11 @@
 Summary:	An Implementation of the ActiveSync protocol
 Name:		z-push
-Version:	1.2
-Release:	0.5
+Version:	1.2.1
+Release:	0.1
 License:	GPL v2
 Group:		Applications/WWW
 Source0:	http://download.berlios.de/z-push/%{name}-%{version}.tar.gz
-# Source0-md5:	17d57872b08f59e739e7e699db71ee86
+# Source0-md5:	c0a2d6f7f1bfcf3d73580cede4c6eb6c
 Patch0:		%{name}.patch
 Patch1:		%{name}-apache_request_headers.patch
 URL:		http://z-push.sourceforge.net/
