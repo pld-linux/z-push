@@ -33,8 +33,8 @@ can be connected and synced with these devices.
 %prep
 %setup -q -n %{name}
 find -name '*.php' -print0 | xargs -0 %{__sed} -i -e 's,\r$,,'
-%patch0 -p1
-%patch1 -p1
+%patch -P0 -p1
+%patch -P1 -p1
 
 cat > apache.conf <<'EOF'
 Alias /Microsoft-Server-ActiveSync %{_appdir}/index.php
